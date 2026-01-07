@@ -47,10 +47,3 @@ def solve(file):
 
 
 print(solve("input.txt"))
-
-
-"""
-The forklifts can only access a roll of paper if there are fewer than four rolls of paper in the eight a
-djacent positions. If you can figure out which rolls of paper the forklifts can access, they'll spend less 
-time looking and more time breaking down the wall to the cafeteria.
-"""
