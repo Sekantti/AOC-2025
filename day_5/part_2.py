@@ -1,4 +1,4 @@
-import re
+from itertools import permutations
 import math
 
 def get_data(file):
@@ -14,63 +14,59 @@ def get_data(file):
 
     return output
 
-def order_range(range):
-    if range[0] > range[1]:
-        return [range[1], range[0]]
-    
-    return range
-
-def order_ranges(ranges):
-    output_ranges = []
-    for range in ranges:
-        output_ranges.append(order_range(range))
-
-    return output_ranges
-
-def is_value_in_range(range, value):
-    if value >= range[0] and value <= range[1]:
+def overlaps(range_1, range_2):
+    r1 = range(range_1[0], range_1[1]+1)
+    r2 = range(range_2[0], range_2[1]+1)
+    if range_1[0] in r2 or range_1[1] in r2 or range_2[0] in r1 or range_2[1] in r1:
         return True
-    
+
     return False
 
-def combine_range(range_1, range_2):
-    new_range = [range_1[0], range_1[1]]
-    if is_value_in_range(range_1, range_2[0]) and range_2[1] > range_1[1]:
-        new_range = [new_range[0], range_2[1]]
-    if is_value_in_range(range_1, range_2[1]) and range_2[0] < range_1[0]:
-        new_range = [range_2[0], new_range[1]]
-    
-    return new_range
+def merge(range_0, range_1):
+    return [min(range_0[0], range_1[0]), max(range_0[1], range_1[1])]
 
-def combine_ranges(ranges, range_1):
-    new_ranges = ranges
-    for range in ranges:
-        new_range = combine_range(range, range_1)
-        if new_range[0] != range[0] or new_range[1] != range[1]:
-            new_ranges.remove(range)
-            new_ranges.remove(range_1)
-            new_ranges.append(new_range)
-        
+def combine_ranges(ranges):
+    new_ranges = []
+
+    for range_1 in ranges:
+        temp_ranges = []
+        merged = False
+        for range_2 in new_ranges:
+            if not merged and overlaps(range_1, range_2):
+                temp_ranges.append(merge(range_1, range_2))
+                merged = True
+            else:
+                temp_ranges.append(range_2)
+        if not merged:
+            temp_ranges.append(range_1)
+        new_ranges = temp_ranges
+
     return new_ranges
 
 def combine_all_ranges(ranges):
-    new_ranges = []
-    for range in ranges:
-        new_ranges = combine_ranges(ranges, range)
+    new_ranges = ranges[:]
+    length = len(new_ranges)
+
+    while True:
+        new_ranges = combine_ranges(new_ranges)
+        new_length = len(new_ranges)
+
+        if new_length < length:
+            length = new_length
+        else:
+            break
 
     return new_ranges
 
-def solve(file):
-    freshness_ranges = combine_all_ranges(order_ranges(get_data(file)))
 
-    fresh_IDs = []
+def solve(file):
+    freshness_ranges = combine_all_ranges(get_data(file))
+    fresh_IDs = 0
 
     for freshness_range in freshness_ranges:
-        freshness_range = order_range(freshness_range)
-        for x in range(freshness_range[0], freshness_range[1]+1):
-            if x not in fresh_IDs:
-                fresh_IDs.append(x)
+        fresh_IDs += freshness_range[1]+1 - freshness_range[0]
 
-    return len(fresh_IDs)
+    return fresh_IDs
+
 
 print(solve("input.txt"))
