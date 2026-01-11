@@ -3,16 +3,16 @@ import math
 
 def get_data(file):
     input = open(file).read().split("\n\n")
-    temp_output = input[0].split("\n")
-    output = []
+    lists = input[0].split("\n")
+    ranges = []
 
-    for x in range(0, len(temp_output)):
-        temp_output[x] = temp_output[x].split("-")
+    for x in range(0, len(lists)):
+        lists[x] = lists[x].split("-")
 
-    for element in temp_output:
-        output.append(range(int(element[0]), int(element[1])+1))
+    for list in lists:
+        ranges.append(range(int(list[0]), int(list[1])+1))
 
-    return output
+    return ranges
 
 def overlaps(r1, r2):
     if r1[0] in r2 or r1[-1] in r2 or r2[0] in r1 or r2[-1] in r1:
