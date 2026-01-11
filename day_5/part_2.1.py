@@ -1,6 +1,3 @@
-from itertools import permutations
-import math
-
 def get_data(file):
     input = open(file).read().split("\n\n")
     lists = input[0].split("\n")

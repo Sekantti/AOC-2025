@@ -21,7 +21,7 @@ def transpose(matrix):
     return transposed
 
 def contains_operator(string):
-    return re.search('\*', string) != None or re.search('\+', string) != None
+    return "*" in string or "+" in string
 
 def extract_operator(string):
     operator = string[-1]
@@ -30,11 +30,11 @@ def extract_operator(string):
     return [operator, output]
 
 def remove_whitespace(array):
-    output = array[:]
+    output = []
 
-    for elem in output:
-        if elem.isspace():
-            output.remove(elem)
+    for elem in array:
+        if not elem.isspace():
+            output.append(elem)
 
     return output
 
@@ -43,9 +43,9 @@ def to_int(array):
 
     for elem in array:
         if contains_operator(elem):
-            operation = extract_operator(elem)
-            output.append(operation[0])
-            output.append(int(operation[1]))
+            operation, number = extract_operator(elem)
+            output.append(operation)
+            output.append(int(number))
         else:
             output.append(int(elem))
 
